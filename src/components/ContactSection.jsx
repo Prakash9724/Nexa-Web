@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import { FiSend, FiMail, FiPhone, FiMapPin, FiGithub, FiTwitter, FiLinkedin, FiInstagram } from 'react-icons/fi';
 import gsap from 'gsap';
+import emailjs from '@emailjs/browser';
 
 const ContactSection = () => {
   const ref = useRef(null);
@@ -78,12 +79,24 @@ const ContactSection = () => {
     setFormState(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
+
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        // your template ID
+        {
+          from_name: formState.name,
+          from_email: formState.email,
+          message: formState.message,
+          to_email: 'prakashpatel972461@gmail.com',
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+      );
+
       setIsSubmitting(false);
       setIsSubmitted(true);
       
@@ -96,7 +109,12 @@ const ContactSection = () => {
           message: ''
         });
       }, 3000);
-    }, 1500);
+
+    } catch (error) {
+      console.error('Error sending email:', error);
+      setIsSubmitting(false);
+      // Optional: Add error handling UI here
+    }
   };
   
   const handleRippleEffect = (e) => {
@@ -158,7 +176,7 @@ const ContactSection = () => {
                       </div>
                       <div>
                         <h4 className="text-white font-medium mb-1">Email</h4>
-                        <a href="mailto:hello@nexaweb.com" className="text-light-dark hover:text-primary-light transition-colors duration-300">
+                        <a href="mailto:hellobrother91069@gmail.com" className="text-light-dark hover:text-primary-light transition-colors duration-300">
                           hello@nexaweb.com
                         </a>
                       </div>
@@ -346,7 +364,7 @@ const ContactSection = () => {
               © 2025 Nexa Web. All Rights Reserved.
             </p>
             <p className="text-light-dark mt-2">
-              Built with ❤️ using ReactJS, Tailwind CSS & GSAP by Prakash, Ayush, Deep & Vatsal.
+              Built with ❤ using ReactJS, Tailwind CSS & GSAP by Prakash, Ayush, Deep & Vatsal.
             </p>
           </motion.div>
         </motion.div>
@@ -355,4 +373,4 @@ const ContactSection = () => {
   );
 };
 
-export default ContactSection; 
+export default ContactSection;
